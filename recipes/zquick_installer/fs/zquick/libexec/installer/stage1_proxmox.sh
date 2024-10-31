@@ -48,10 +48,28 @@ debootstrap() {
     fi
   }
 
+  get_tar_url() {
+    local url="https://ftp.debian.org/debian/pool/main/d/debootstrap/"
+    local pattern='debootstrap_[0-9][0-9.]*\(-[0-9]\+\)\?\.tar\.gz'
+    local html
+    local latest_version_filename
+
+    html=$(wget -qO- "$url") || return 1
+
+    latest_version_filename=$(echo "$html" | grep -o "$pattern" | sort -V | tail -n 1)
+
+    if [ -n "$latest_version_filename" ]; then
+        echo "${url}${latest_version_filename}"
+        return 0
+    else
+        echo "Error: Could not find debootstrap file in $url matching pattern $pattern" >&2
+        return 1
+    fi
+  }
+
   get_from_tar() {
     (cd "${DEBROOT}" && \
-      wget https://ftp.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.137.tar.gz && \
-      tar zxf debootstrap_1.0.137.tar.gz
+      wget -qO- "$(get_tar_url)" && tar zx
     )
   }
 
