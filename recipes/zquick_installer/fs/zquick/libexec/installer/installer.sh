@@ -232,9 +232,9 @@ partition_drive() {
             log sgdisk -I -n 3:0:-1M -c 3:"ZFS Root Partition" -t 3:bf01 "$DEV"
             gum style "Partitioning successful"
             gum style ""
-            xspin wipefs -a "$DEV"1
-            xspin wipefs -a "$DEV"2
-            xspin wipefs -a "$DEV"3
+            xspin wipefs -a "$DEV"1 2>/dev/null || xspin wipefs -a "$DEV"p1
+            xspin wipefs -a "$DEV"2 2>/dev/null || xspin wipefs -a "$DEV"p2
+            xspin wipefs -a "$DEV"3 2>/dev/null || xspin wipefs -a "$DEV"p3
             xspin sgdisk -p "$DEV"
             xspin sgdisk -v "$DEV"
             gum style ""
