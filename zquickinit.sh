@@ -139,6 +139,21 @@ check() {
 			exit 1
 		fi
 	fi
+	if [[ $1 == rm ]] && [[ -z "${RM}" ]]; then
+		if command -v grm &>/dev/null; then
+			RM="grm"
+		else
+			RM="rm"
+		fi
+		if [[ ! "$(${RM} --version 2>&1 | head -n1)" == *GNU* ]]; then
+			echo "rm must be GNU flavored. Update or install coreutils package. "
+			if [[ "$OSTYPE" == "darwin"* ]]; then
+				echo "On MacOS, use brew to install coreutils"
+				echo "Note: brew uses /usr/local/bin on Intel, and /opt/homebrew/bin on Apple"
+			fi
+			exit 1
+		fi
+	fi
 }
 
 # This will build the main ZquickInit Builder OCI image

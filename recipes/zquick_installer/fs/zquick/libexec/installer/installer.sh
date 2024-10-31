@@ -563,7 +563,8 @@ install() {
     zfs snapshot -r "$snap"
     if (( EXISTING==1 )); then
         gum style "* Deleting existing data in ${DATASET}"
-        rm --one-file-system -rf "${CHROOT_MNT:?}"/{..?*,.[!.]*,*}
+        check rm
+        "$RM" --one-file-system -rf "${CHROOT_MNT:?}"/{..?*,.[!.]*,*}
     fi
     gum style "* Running bootstrap"
     if ! env INSTALLER_DIR="$INSTALLER_DIR" "${INSTALL_SCRIPT}"; then
